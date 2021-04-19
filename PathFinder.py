@@ -15,10 +15,11 @@ box_height = height / rows
 
 default_color = (120,120,120)
 wall_color = (0, 0, 0)
-seen_color = (200, 0, 0)
-new_color = (0, 200, 00)
+seen_color = (0, 0, 200)
+new_color = (0, 200, 0)
 path_color = (200, 0, 200)
-startEND_color = (220, 220, 220)
+start_color = (220, 220, 220)
+end_color = (200, 0, 0)
 
 pygame.init()
 pygame.display.set_caption("PATHFINDER")
@@ -409,8 +410,8 @@ def main():
     end_x, end_y = rand_cords()
     while start_x == end_x or start_y == end_y: #Makes sure that start and end are not in same row or same column
         end_x, end_y = rand_cords()
-    grid[start_x][start_y].color(startEND_color)
-    grid[end_x][end_y].color(startEND_color)
+    grid[start_x][start_y].color(start_color)
+    grid[end_x][end_y].color(end_color)
     start = grid[start_x][start_y]
     end = grid[end_x][end_y]
     alg = readEvents(grid, start, end)
