@@ -44,11 +44,39 @@ class node:
             returns:
                 None
         distance:
+            arguments:
+                self
+                other - node
+            returns:
+                distance - Taxi Cab distance between self and other's cordinates
         color:
+            Description:
+                Colors location on grid with corresponding cordonates
+            arguments:
+                self
+                color - (optional) color in RGB tuple format
+            returns:
+                None
         switch:
-        make_wall:
+            Description:
+                reverses value of self.wall
+            arguments:
+                self
+            returns:
+                None
+            make_wall:
         remove_wall:
+            Description:
+                Makes self.wall False
+            arguments:
+                self
+            returns:
+                None
         get_available_neighbors:
+            arguments:
+                self
+            returns:
+                available_neighbors - all neighbors where self.wall == False (The Neighbors that can be used to create a path)
         
         __repr__
         __hash__
