@@ -25,7 +25,7 @@ pygame.display.set_caption("PATHFINDER")
 screen = pygame.display.set_mode((width, height))
 
 
-class node:
+class Node:
     """
     Node class:
 
@@ -48,10 +48,10 @@ class node:
                 self
                 other - node
             returns:
-                distance - Taxi Cab distance between self and other's cordinates
+                distance - Taxi Cab distance between self and other's coordinates
         color:
             Description:
-                Colors location on grid with corresponding cordonates
+                Colors location on grid with corresponding coordinates
             arguments:
                 self
                 color - (optional) color in RGB tuple format
@@ -123,14 +123,14 @@ class node:
             self
             other - node
         returns:
-            distance - Taxi Cab distance between self and other's cordinates
+            distance - Taxi Cab distance between self and other's coordinates
         """
         return abs(self.x - other.x) + abs(self.y - other.y)
 
     def color(self, color=default_color):
         """
         Description:
-            Colors location on grid with corresponding cordonates
+            Colors location on grid with corresponding coordinates
         arguments:
             self
             color - (optional) color in RGB tuple format
@@ -197,10 +197,10 @@ class node:
 def wall(grid, pos, start, end):
     """
     Description:
-        Turns node at given postion into a wall if node is not start or end
+        Turns node at given position into a wall if node is not start or end
     arguments:
         grid - grid of nodes used to find path
-        pos - tuple with mouse postion
+        pos - tuple with mouse position
         start - start node
         end - end node
     returns:
@@ -214,10 +214,10 @@ def wall(grid, pos, start, end):
 def unwall(grid, pos, start, end):
     """
     Description:
-        Turns node at given postion into not a wall if node is not start or end
+        Turns node at given position into not a wall if node is not start or end
     arguments:
         grid - grid of nodes used to find path
-        pos - tuple with mouse postion
+        pos - tuple with mouse position
         start - start node
         end - end node
     returns:
@@ -235,13 +235,13 @@ def create_grid(cols=columns, rws=rows):
         rws - number of rows(Defaulted to variable given at beginning of file)
     returns:
         grid - grid of nodes used to find path with specified number of rows and columns
-               All nodes are neighbors to vertically and horizantally adjacent nodes
+               All nodes are neighbors to vertically and horizontally adjacent nodes
     """
     grid = []
     for x in range(cols):
         grid.append([])
-        for y in range(rows):
-            grid[x].append(node(x, y))
+        for y in range(rws):
+            grid[x].append(Node(x, y))
             grid[x][
                 y].color()  # Drawing each individual node is slow. If performance is an issue color entire grid at once
             if x > 0:
@@ -338,11 +338,9 @@ def dijkstra(start, end):
     while end not in known_paths and len(current_neighbors) > 0:
         new_neighbors = []
         for n in current_neighbors:
-
             checkClose()
             if n != start:
                 n.color(seen_color)
-
             for k in n.get_available_neighbors():
                 if k not in known_paths:
                     known_paths[k] = known_paths[n].copy()
@@ -387,7 +385,7 @@ def min_path(neighbors, known_paths):
     return path.copy()
 
 
-def psuedoAStar(start, end):
+def pseudoAStar(start, end):
     """
     Description:
         Starts at start node and visualizes search (similar to A* but implementation is admittedly wonky) for end node  
@@ -449,9 +447,9 @@ def main():
     end = grid[end_x][end_y]
     alg = readEvents(grid, start, end)
     if alg == "DJ":
-        path = dijkstra(start, end)
+        dijkstra(start, end)
     else:
-        path = psuedoAStar(start, end)
+        pseudoAStar(start, end)
     while True:
         checkEnd()
 
