@@ -338,9 +338,11 @@ def dijkstra(start, end):
     while end not in known_paths and len(current_neighbors) > 0:
         new_neighbors = []
         for n in current_neighbors:
+
             checkClose()
             if n != start:
                 n.color(seen_color)
+
             for k in n.get_available_neighbors():
                 if k not in known_paths:
                     known_paths[k] = known_paths[n].copy()
@@ -349,10 +351,6 @@ def dijkstra(start, end):
                         break
                     new_neighbors.append(k)
                     k.color(new_color)
-            if k == end:
-                break
-        if k == end:
-            break
         current_neighbors = new_neighbors
     if end not in known_paths:
         return None
@@ -389,7 +387,7 @@ def min_path(neighbors, known_paths):
     return path.copy()
 
 
-def psuedoAStar(grid, start, end):
+def psuedoAStar(start, end):
     """
     Description:
         Starts at start node and visualizes search (similar to A* but implementation is admittedly wonky) for end node  
@@ -417,12 +415,8 @@ def psuedoAStar(grid, start, end):
                         break
                     new_neighbors.append(k)
                     k.color(new_color)
-            if k == end:
-                break
         current_neighbors = current_neighbors[2:] + new_neighbors
         current_neighbors = sort_by_dist(current_neighbors, end)
-        if k == end:
-            break
 
     if end not in known_paths:
         return None
@@ -455,9 +449,9 @@ def main():
     end = grid[end_x][end_y]
     alg = readEvents(grid, start, end)
     if alg == "DJ":
-        path = dijkstra(grid, start, end)
+        path = dijkstra(start, end)
     else:
-        path = psuedoAStar(grid, start, end)
+        path = psuedoAStar(start, end)
     while True:
         checkEnd()
 
