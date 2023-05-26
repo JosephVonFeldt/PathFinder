@@ -2,8 +2,7 @@ import pygame
 import sys
 from random import randint
 
-
-#Variables used to create grid and visualization
+# Variables used to create grid and visualization
 width = 600
 height = 600
 
@@ -13,7 +12,7 @@ rows = 50
 box_width = width / columns
 box_height = height / rows
 
-default_color = (120,120,120)
+default_color = (120, 120, 120)
 wall_color = (0, 0, 0)
 seen_color = (0, 0, 200)
 new_color = (0, 200, 0)
@@ -23,7 +22,8 @@ end_color = (200, 0, 0)
 
 pygame.init()
 pygame.display.set_caption("PATHFINDER")
-screen = pygame.display.set_mode((width,height))
+screen = pygame.display.set_mode((width, height))
+
 
 class node:
     """
@@ -85,6 +85,7 @@ class node:
         
 
     """
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -105,16 +106,16 @@ class node:
         other.neighbors.append(self)
 
     def __repr__(self):
-        return str((self.x,self.y, self.wall))
-    
+        return str((self.x, self.y, self.wall))
+
     def __hash__(self):
-        return hash((self.x,self.y))
+        return hash((self.x, self.y))
 
     def __eq__(self, other):
         return hash(self) == hash(other)
 
     def __gt__(self, other):
-        return (self.x,self.y)>(other.x,other.y)
+        return (self.x, self.y) > (other.x, other.y)
 
     def distance(self, other):
         """
@@ -126,7 +127,7 @@ class node:
         """
         return abs(self.x - other.x) + abs(self.y - other.y)
 
-    def color(self, color = default_color):
+    def color(self, color=default_color):
         """
         Description:
             Colors location on grid with corresponding cordonates
@@ -136,7 +137,7 @@ class node:
         returns:
             None
         """
-        rect = (self.x*box_width, self.y*box_height,box_width, box_height)
+        rect = (self.x * box_width, self.y * box_height, box_width, box_height)
         pygame.draw.rect(screen, color, rect)
         pygame.display.update()
 
@@ -154,6 +155,7 @@ class node:
             self.color(wall_color)
         else:
             self.color(default_color)
+
     def make_wall(self):
         """
         Description:
@@ -177,7 +179,7 @@ class node:
         """
         self.wall = False
         self.color(default_color)
-        
+
     def get_available_neighbors(self):
         """
         arguments:
@@ -190,7 +192,7 @@ class node:
             if not n.wall:
                 available_neighbors.append(n)
         return available_neighbors
-    
+
 
 def wall(grid, pos, start, end):
     """
@@ -204,9 +206,10 @@ def wall(grid, pos, start, end):
     returns:
         None
     """
-    n = grid[int(pos[0]//box_width)][int(pos[1]//box_height)]
+    n = grid[int(pos[0] // box_width)][int(pos[1] // box_height)]
     if not n == start and not n == end:
         n.make_wall()
+
 
 def unwall(grid, pos, start, end):
     """
@@ -220,11 +223,12 @@ def unwall(grid, pos, start, end):
     returns:
         None
     """
-    n = grid[int(pos[0]//box_width)][int(pos[1]//box_height)]
+    n = grid[int(pos[0] // box_width)][int(pos[1] // box_height)]
     if not n == start and not n == end:
         n.remove_wall()
-    
-def create_grid(cols = columns, rws = rows):
+
+
+def create_grid(cols=columns, rws=rows):
     """
     arguments:
         cols - number of columns(Defaulted to variable given at beginning of file)
@@ -237,14 +241,16 @@ def create_grid(cols = columns, rws = rows):
     for x in range(cols):
         grid.append([])
         for y in range(rows):
-            grid[x].append(node(x,y))
-            grid[x][y].color() #Drawing each individual node is slow. If performance is an issue color entire grid at once
-            if x>0:
-                grid[x][y].add_neighbor(grid[x-1][y])
-            if y>0:
-                grid[x][y].add_neighbor(grid[x][y-1])
+            grid[x].append(node(x, y))
+            grid[x][
+                y].color()  # Drawing each individual node is slow. If performance is an issue color entire grid at once
+            if x > 0:
+                grid[x][y].add_neighbor(grid[x - 1][y])
+            if y > 0:
+                grid[x][y].add_neighbor(grid[x][y - 1])
             checkClose()
     return grid
+
 
 def checkClose():
     """
@@ -259,7 +265,7 @@ def checkClose():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        
+
 
 def checkEnd():
     """
@@ -279,7 +285,8 @@ def checkEnd():
             if event.key == pygame.K_RETURN:
                 main()
 
-def readEvents(grid, start, end ):
+
+def readEvents(grid, start, end):
     """
     Description:
         While loop that runs until space or ENTER is pressed.
@@ -301,58 +308,58 @@ def readEvents(grid, start, end ):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    wall(grid,pygame.mouse.get_pos(),start,end)
+                    wall(grid, pygame.mouse.get_pos(), start, end)
                 if event.button == 2:
-                    unwall(grid,pygame.mouse.get_pos(),start,end)
+                    unwall(grid, pygame.mouse.get_pos(), start, end)
             mouse_buttons = pygame.mouse.get_pressed()
             if mouse_buttons[0]:
-                wall(grid,pygame.mouse.get_pos(),start,end)
+                wall(grid, pygame.mouse.get_pos(), start, end)
             if mouse_buttons[2]:
-                unwall(grid,pygame.mouse.get_pos(),start,end)
+                unwall(grid, pygame.mouse.get_pos(), start, end)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     return None
                 if event.key == pygame.K_SPACE:
                     return "DJ"
 
-            
-def dijkstra(grid, start, end):
+
+def dijkstra(start, end):
     """
     Description:
         Starts at start node and visualizes dijkstra's algorithm search for end node  
     arguments:
-        grid - grid of nodes used to find path
         start - start node
         end - end node
     returns:
         path - list of nodes creating a path from start to end node (if no path exists, none is returned)
     """
-    known_pathes = {start:[start]}
+    known_paths = {start: [start]}
     current_neighbors = [start]
-    while end not in known_pathes and len(current_neighbors)>0:
+    while end not in known_paths and len(current_neighbors) > 0:
         new_neighbors = []
         for n in current_neighbors:
             checkClose()
             if n != start:
                 n.color(seen_color)
             for k in n.get_available_neighbors():
-                if k not in known_pathes:
-                    known_pathes[k] = known_pathes[n].copy()
-                    known_pathes[k].append(k)
+                if k not in known_paths:
+                    known_paths[k] = known_paths[n].copy()
+                    known_paths[k].append(k)
                     if k == end:
                         break
                     new_neighbors.append(k)
                     k.color(new_color)
             if k == end:
-                        break
+                break
         if k == end:
-                        break
+            break
         current_neighbors = new_neighbors
-    if end not in known_pathes:
+    if end not in known_paths:
         return None
-    for n in known_pathes[end][1:-1]:
+    for n in known_paths[end][1:-1]:
         n.color(path_color)
-    return known_pathes[end]
+    return known_paths[end]
+
 
 def sort_by_dist(node_list, end):
     """
@@ -363,23 +370,25 @@ def sort_by_dist(node_list, end):
         sorted_node_list - list of nodes sorted by distance from end (closest first)
     """
     distances = [n.distance(end) for n in node_list]
-    return [n for distance, n in sorted(zip(distances,node_list))]
+    return [n for distance, n in sorted(zip(distances, node_list))]
 
-def min_path(neighbors, known_pathes):
+
+def min_path(neighbors, known_paths):
     """
     arguments:
         neighbors - list of nodes
-        known_pathes - dict with nodes as keys and known_pathes to those nodes as values
+        known_paths - dict with nodes as keys and known_paths to those nodes as values
     returns:
-        shortest_known_path - shortest path from known_pathes with a neighbor as a key
+        shortest_known_path - shortest path from known_paths with a neighbor as a key
     """
     path = []
     for n in neighbors:
-        if n in known_pathes:
-            if path == [] or len(known_pathes[n])<len(path):
-                path = known_pathes[n]
+        if n in known_paths:
+            if path == [] or len(known_paths[n]) < len(path):
+                path = known_paths[n]
     return path.copy()
-  
+
+
 def psuedoAStar(grid, start, end):
     """
     Description:
@@ -391,37 +400,38 @@ def psuedoAStar(grid, start, end):
     returns:
         path - list of nodes creating a path from start to end node (if no path exists, none is returned)
     """
-    known_pathes = {start:[start]}
+    known_paths = {start: [start]}
     current_neighbors = [start]
-    
-    while end not in known_pathes and len(current_neighbors)>0:
+
+    while end not in known_paths and len(current_neighbors) > 0:
         new_neighbors = []
         for n in current_neighbors[:2]:
             checkClose()
             if n != start:
                 n.color(seen_color)
             for k in n.get_available_neighbors():
-                if k not in known_pathes:
-                    known_pathes[k] = min_path(k.get_available_neighbors(),known_pathes)
-                    known_pathes[k].append(k)
+                if k not in known_paths:
+                    known_paths[k] = min_path(k.get_available_neighbors(), known_paths)
+                    known_paths[k].append(k)
                     if k == end:
                         break
                     new_neighbors.append(k)
                     k.color(new_color)
             if k == end:
-                        break
-        current_neighbors = current_neighbors[2:]+new_neighbors
+                break
+        current_neighbors = current_neighbors[2:] + new_neighbors
         current_neighbors = sort_by_dist(current_neighbors, end)
         if k == end:
-                        break
-        
-    if end not in known_pathes:
-        return None
-    for n in known_pathes[end][1:-1]:
-        n.color(path_color)
-    return known_pathes[end]
+            break
 
-def rand_cords(cols = columns, rws = rows):
+    if end not in known_paths:
+        return None
+    for n in known_paths[end][1:-1]:
+        n.color(path_color)
+    return known_paths[end]
+
+
+def rand_cords(cols=columns, rws=rows):
     """
     arguments:
         cols - number of columns(Defaulted to variable given at beginning of file)
@@ -430,13 +440,14 @@ def rand_cords(cols = columns, rws = rows):
         x - random x value 
         y - random y value
     """
-    return randint(0,cols-1),randint(0,rws-1)
+    return randint(0, cols - 1), randint(0, rws - 1)
+
 
 def main():
     grid = create_grid()
     start_x, start_y = rand_cords()
     end_x, end_y = rand_cords()
-    while start_x == end_x or start_y == end_y: #Makes sure that start and end are not in same row or same column
+    while start_x == end_x or start_y == end_y:  # Makes sure that start and end are not in same row or same column
         end_x, end_y = rand_cords()
     grid[start_x][start_y].color(start_color)
     grid[end_x][end_y].color(end_color)
@@ -444,14 +455,12 @@ def main():
     end = grid[end_x][end_y]
     alg = readEvents(grid, start, end)
     if alg == "DJ":
-        path = dijkstra(grid, start, end )
+        path = dijkstra(grid, start, end)
     else:
-        path = psuedoAStar(grid,start,end)
+        path = psuedoAStar(grid, start, end)
     while True:
         checkEnd()
-        
-main()
-    
 
-    
-    
+
+if __name__ == "__main__":
+    main()
